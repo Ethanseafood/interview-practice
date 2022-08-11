@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
   <meta charset="UTF-8">
@@ -30,48 +30,38 @@
             <th scope="col">Description</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="myTable">
         </tbody>
       </table>
     </div>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
   <script>
-
-    async function getRepo() {
-      const clientIdAndSecret =
-        "Ethanseafood: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";
-      // const base64 = Buffer.from(clientIdAndSecret).toString("base64");
-
-      const targetUrl = "https://api.github.com/users/Ethanseafood/repos";
-      //console.log(targetUrl);
-      const userDetails = await fetch(targetUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept-Language": "en_US",
-          Accept: "application/vnd.github.v3+json",
-          // Authorization: `Basic ${base64}`,
-        },
-      });
-      return userDetails.json();
+    function displayRepo(result) {
+      let table = document.getElementById("myTable");
+      let row = table.insertRow(0);
+      let cell1 = row.insertCell(0);
+      let cell2 = row.insertCell(1);
+      let cell3 = row.insertCell(2);
+      let cell4 = row.insertCell(3);
+      cell1.innerHTML = result.id;
+      cell2.innerHTML = result.name;
+      cell3.innerHTML = result.html_url;
+      cell4.innerHTML = result.description;
     }
 
-    (async () => {
-      const results = await getRepo();
-      let statusHTML = "";
+    async function getRepos() {
+      const res = await fetch('https://api.github.com/users/Ethanseafood/repos', {
+        // mode:'cors',
+      });
+      let results = await res.json();
       for (const result of results) {
-        statusHTML += "<tr>";
-        statusHTML += "<td>" + result.id + "</td>";
-        statusHTML += "<td>" + result.name + "</td>";
-        statusHTML += "<td>" + result.html_url + "</td>";
-        statusHTML += "<td>" + result.description + "</td>";
-        statusHTML += "</tr>";
-        $("tbody").html(statusHTML);
+        displayRepo(result)
       }
-    })();
-
+    }
+    getRepos();
   </script>
+
 </body>
 
 </html>
